@@ -19,7 +19,7 @@ import Contact from "../forms/Contact";
 
 const EditorPanel = () => {
   return (
-    <div className="flex h-full w-full items-center justify-start">
+    <div className="flex flex-col h-full w-full items-center justify-start">
       <Tabs defaultValue="templates" className="h-full w-full">
         <TabsList className="">
           <TabsTrigger value="templates">

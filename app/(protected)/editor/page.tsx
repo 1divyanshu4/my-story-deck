@@ -1,9 +1,9 @@
-import { ResizableLayout } from "@/components/layout/ResizableLayout";
+import LayoutSwitcher from "@/components/layout/ResizableLayout";
 
 const Editor = () => {
   return (
-    <div className="min-h-screen">
-      <ResizableLayout />
+    <div className="h-screen">
+      <LayoutSwitcher />
     </div>
   );
 };

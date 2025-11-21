@@ -1,5 +1,12 @@
+import { PreviewPanel } from "@/components/panels/PreviewPanel";
+import { initialPortfolioData } from "@/data/testData";
+
 const PublicPortfolio = () => {
-  return <div> This is a Public portfolio page</div>;
+  return (
+    <div>
+      <PreviewPanel data={initialPortfolioData} />
+    </div>
+  );
 };
 
 export default PublicPortfolio;
