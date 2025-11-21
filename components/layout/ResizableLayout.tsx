@@ -1,42 +1,58 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Smartphone, Tablet, Monitor, Code } from "lucide-react";
-import { PreviewPanel } from "../panels/PreviewPanel";
-import EditorPanel from "../panels/EditorPanel";
-import ResponsivePreview from "./ResponsivePreview";
-import { initialPortfolioData } from "@/data/testData";
-import { Separator } from "../ui/separator";
 import { UserButton } from "@clerk/nextjs";
+import EditorPanel from "../panels/EditorPanel";
+import { Separator } from "../ui/separator";
+import ResponsivePreview from "./ResponsivePreview";
+import { PreviewPanel } from "../panels/PreviewPanel";
+import { initialPortfolioData } from "@/data/testData";
 
 export default function LayoutSwitcher() {
-  // Modes: 'mobile' (75/25), 'tab' (50/50), 'desktop' (0/100 - Fullscreen Preview)
+  // Modes: 'editor' (100/0), 'mobile' (75/25), 'tab' (50/50), 'desktop' (0/100)
   const [layoutMode, setLayoutMode] = useState("tab");
 
-  // Calculate widths based on current mode
+  // Auto-resize logic (keeps the layout responsive to the browser window)
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window !== "undefined") {
+        if (window.innerWidth < 1024) {
+          setLayoutMode((prev) =>
+            prev === "tab" || prev === "mobile" ? "editor" : prev
+          );
+        } else {
+          setLayoutMode((prev) => (prev === "editor" ? "tab" : prev));
+        }
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const getPanelStyles = () => {
     switch (layoutMode) {
+      case "editor":
+        return {
+          editor: "w-full",
+          preview: "w-0 opacity-0 pointer-events-none", // Added pointer-events-none
+        };
       case "mobile":
         return {
           editor: "w-[75%]",
-          preview: "w-[25%]",
-          editorOpacity: "opacity-100",
-          previewOpacity: "opacity-100",
+          preview: "w-[25%] opacity-100",
         };
       case "desktop":
         return {
-          editor: "w-[0%]",
-          preview: "w-[100%]",
-          editorOpacity: "opacity-0 overflow-hidden",
-          previewOpacity: "opacity-100",
+          editor: "w-0 opacity-0 overflow-hidden",
+          preview: "w-full opacity-100",
         };
       case "tab":
       default:
         return {
           editor: "w-[50%]",
-          preview: "w-[50%]",
-          editorOpacity: "opacity-100",
-          previewOpacity: "opacity-100",
+          preview: "w-[50%] opacity-100",
         };
     }
   };
@@ -44,86 +60,106 @@ export default function LayoutSwitcher() {
   const styles = getPanelStyles();
 
   return (
-    <div className="flex flex-col h-screen w-full overflow-hidden">
-      {/* --- Mode Switcher Toolbar --- */}
-      <div className="h-14 border-b  flex items-center justify-between px-6">
-        <div className=" font-semibold flex items-center gap-2">
-          <Code size={20} className="text-blue-900" />
+    <div className="flex flex-col h-screen w-full overflow-hidden bg-slate-50 text-slate-900">
+      {/* --- Toolbar --- */}
+      <div className="h-14 border-b border-slate-200 flex items-center justify-between px-6 bg-white shrink-0">
+        <div className="font-semibold flex items-center gap-2 text-slate-800">
+          <Code size={20} className="text-blue-600" />
           <span>Workspace</span>
         </div>
-        <div className="flex bg-slate-200 p-1 rounded-lg border border-slate-200 gap-1">
-          <button
+
+        <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200 gap-1">
+          <ToolbarButton
+            active={layoutMode === "editor"}
+            onClick={() => setLayoutMode("editor")}
+            icon={<Code size={16} />}
+            label="Editor"
+            className="lg:hidden"
+          />
+          <ToolbarButton
+            active={layoutMode === "mobile"}
             onClick={() => setLayoutMode("mobile")}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-all ${
-              layoutMode === "mobile"
-                ? "bg-white shadow-sm"
-                : " hover:bg-slate-50"
-            }`}
-            title="Mobile Layout (75% Editor / 25% Preview)"
-          >
-            <Smartphone size={16} />
-            <span className="hidden sm:inline">Mobile</span>
-          </button>
-
-          <button
+            icon={<Smartphone size={16} />}
+            label="Mobile"
+            className="hidden lg:flex"
+          />
+          <ToolbarButton
+            active={layoutMode === "tab"}
             onClick={() => setLayoutMode("tab")}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-all ${
-              layoutMode === "tab" ? "bg-white shadow-sm" : " hover:bg-slate-50"
-            }`}
-            title="Tab Layout (50% / 50%)"
-          >
-            <Tablet size={16} />
-            <span className="hidden sm:inline">Tab</span>
-          </button>
-
-          <button
+            icon={<Tablet size={16} />}
+            label="Tab"
+            className="hidden lg:flex"
+          />
+          <ToolbarButton
+            active={layoutMode === "desktop"}
             onClick={() => setLayoutMode("desktop")}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-all ${
-              layoutMode === "desktop"
-                ? "bg-white shadow-sm"
-                : " hover:bg-slate-50"
-            }`}
-            title="Desktop Layout (Fullscreen Preview)"
-          >
-            <Monitor size={16} />
-            <span className="hidden sm:inline">Desktop</span>
-          </button>
+            icon={<Monitor size={16} />}
+            label="Preview"
+          />
         </div>
+
         <div className="px-4">
-          <UserButton></UserButton>
+          <UserButton />
         </div>
       </div>
 
       {/* --- Main Layout Area --- */}
       <div className="flex-1 flex w-full overflow-hidden relative">
-        {/* Editor Panel Area */}
+        {/* Editor Panel */}
         <div
-          className={`
-            h-full  transition-all duration-500 ease-in-out
-            ${styles.editor} 
-            ${styles.editorOpacity}
-          `}
+          className={`h-full transition-all duration-500 ease-in-out ${styles.editor}`}
         >
-          <div className="min-w-[300px] h-full mt-4">
+          <div className="min-w-[300px] h-full">
             <EditorPanel />
           </div>
         </div>
-        <Separator orientation="vertical" />
-        {/* Preview Panel Area */}
+
+        {/* Separator (Conditional) */}
+        {layoutMode !== "editor" && layoutMode !== "desktop" && (
+          <Separator orientation="vertical" className="h-full" />
+        )}
+
+        {/* Preview Panel */}
         <div
-          className={`
-            h-full transition-all duration-500 ease-in-out bg-slate-100
-            ${styles.preview}
-            ${styles.previewOpacity}
-          `}
+          className={`h-full transition-all duration-500 ease-in-out bg-slate-50 ${styles.preview}`}
         >
-          <div className="h-full w-full flex items-center justify-center mt-6">
-            <ResponsivePreview>
-              <PreviewPanel data={initialPortfolioData} />
-            </ResponsivePreview>
-          </div>
+          {/* We remove the extra padding/centering here because ResponsivePreview 
+            handles its own internal padding/layout now 
+          */}
+          <ResponsivePreview>
+            <PreviewPanel data={initialPortfolioData} />
+          </ResponsivePreview>
         </div>
       </div>
     </div>
   );
 }
+
+interface ToolbarButtonProps {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+  className?: string;
+}
+// Helper component to clean up the toolbar JSX
+const ToolbarButton = ({
+  active,
+  onClick,
+  icon,
+  label,
+  className = "flex",
+}: ToolbarButtonProps) => (
+  <button
+    onClick={onClick}
+    className={`items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-all ${
+      active
+        ? "bg-white shadow-sm text-blue-700 ring-1 ring-black/5"
+        : "text-slate-500 hover:bg-slate-200 hover:text-slate-700"
+    } ${className}`}
+    title={label}
+  >
+    {icon}
+    <span className="hidden sm:inline">{label}</span>
+  </button>
+);
