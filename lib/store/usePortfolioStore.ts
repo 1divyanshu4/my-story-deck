@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { PortfolioData, Profile, CTAButton } from "@/types";
-import { updateProfile, updatePortfolioTemplate, updateStats } from "@/lib/actions/portfolio.actions";
+import { updateProfile, updatePortfolioTemplate, updateStats, updateSkills } from "@/lib/actions/portfolio.actions";
 
 interface PortfolioState {
     data: PortfolioData | null;
@@ -15,6 +15,8 @@ interface PortfolioState {
     updateTemplate: (template: string) => void;
     addStat: (stat: any) => void;
     removeStat: (index: number) => void;
+    addSkill: (skill: any) => void;
+    removeSkill: (index: number) => void;
     saveChanges: (portfolioId: string) => Promise<void>;
 }
 
@@ -79,6 +81,23 @@ export const usePortfolioStore = create<PortfolioState>()(
                     }
                 }),
 
+            addSkill: (skill) =>
+                set((state) => {
+                    if (state.data) {
+                        if (!state.data.skills) {
+                            state.data.skills = [];
+                        }
+                        state.data.skills.push(skill);
+                    }
+                }),
+
+            removeSkill: (index) =>
+                set((state) => {
+                    if (state.data && state.data.skills) {
+                        state.data.skills.splice(index, 1);
+                    }
+                }),
+
             saveChanges: async (portfolioId) => {
                 const { data } = get();
                 if (!data) return;
@@ -91,6 +110,7 @@ export const usePortfolioStore = create<PortfolioState>()(
                     await updateProfile(portfolioId, data.profile);
                     await updatePortfolioTemplate(portfolioId, data.selectedTemplate);
                     await updateStats(portfolioId, data.stats);
+                    await updateSkills(portfolioId, data.skills);
 
                 } catch (error) {
                     console.error("Failed to save changes:", error);

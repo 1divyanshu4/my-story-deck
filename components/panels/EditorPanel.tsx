@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { ProfileForm } from "../forms/Profile";
 import { StatsForm } from "../forms/StatsForm";
+import { SkillsForm } from "../forms/SkillsForm";
 import Templates from "../forms/Templates";
 import Stats from "../forms/Stats";
 import Skills from "../forms/Skills";
@@ -105,7 +106,7 @@ const EditorPanel = ({
             <StatsForm />
           </TabsContent>
           <TabsContent value="skills">
-            <Skills />
+            <SkillsForm />
           </TabsContent>
           <TabsContent value="journey">
             <Journey />

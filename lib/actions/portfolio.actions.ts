@@ -91,3 +91,25 @@ export async function updateStats(portfolioId: string, stats: any[]) {
         throw new Error(`Failed to update stats: ${error.message}`);
     }
 }
+
+export async function updateSkills(portfolioId: string, skills: any[]) {
+    try {
+        if (!portfolioId) {
+            throw new Error("Portfolio ID is required");
+        }
+
+        await connectToDB();
+
+        await Portfolio.findByIdAndUpdate(
+            portfolioId,
+            { skills: skills },
+            { new: true }
+        );
+
+        revalidatePath("/editor");
+        return { success: true };
+    } catch (error: any) {
+        console.error("Failed to update skills:", error);
+        throw new Error(`Failed to update skills: ${error.message}`);
+    }
+}
