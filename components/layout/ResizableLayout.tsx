@@ -13,7 +13,6 @@ export default function LayoutSwitcher() {
   // Modes: 'editor' (100/0), 'mobile' (75/25), 'tab' (50/50), 'desktop' (0/100)
   const [layoutMode, setLayoutMode] = useState("tab");
 
-  // Auto-resize logic (keeps the layout responsive to the browser window)
   useEffect(() => {
     const handleResize = () => {
       if (typeof window !== "undefined") {
@@ -36,7 +35,7 @@ export default function LayoutSwitcher() {
       case "editor":
         return {
           editor: "w-full",
-          preview: "w-0 opacity-0 pointer-events-none", // Added pointer-events-none
+          preview: "w-0 opacity-0 pointer-events-none",
         };
       case "mobile":
         return {
@@ -62,7 +61,7 @@ export default function LayoutSwitcher() {
   return (
     <div className="flex flex-col h-screen w-full overflow-hidden bg-slate-50 text-slate-900">
       {/* --- Toolbar --- */}
-      <div className="h-14 border-b border-slate-200 flex items-center justify-between px-6 bg-white shrink-0">
+      <div className="h-14 border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 bg-white shrink-0">
         <div className="font-semibold flex items-center gap-2 text-slate-800">
           <Code size={20} className="text-blue-600" />
           <span>Workspace</span>
@@ -98,7 +97,7 @@ export default function LayoutSwitcher() {
           />
         </div>
 
-        <div className="px-4">
+        <div className="px-2">
           <UserButton />
         </div>
       </div>
@@ -114,7 +113,6 @@ export default function LayoutSwitcher() {
           </div>
         </div>
 
-        {/* Separator (Conditional) */}
         {layoutMode !== "editor" && layoutMode !== "desktop" && (
           <Separator orientation="vertical" className="h-full" />
         )}
@@ -123,9 +121,6 @@ export default function LayoutSwitcher() {
         <div
           className={`h-full transition-all duration-500 ease-in-out bg-slate-50 ${styles.preview}`}
         >
-          {/* We remove the extra padding/centering here because ResponsivePreview 
-            handles its own internal padding/layout now 
-          */}
           <ResponsivePreview>
             <PreviewPanel data={initialPortfolioData} />
           </ResponsivePreview>
@@ -152,7 +147,7 @@ const ToolbarButton = ({
 }: ToolbarButtonProps) => (
   <button
     onClick={onClick}
-    className={`items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-all ${
+    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-all ${
       active
         ? "bg-white shadow-sm text-blue-700 ring-1 ring-black/5"
         : "text-slate-500 hover:bg-slate-200 hover:text-slate-700"

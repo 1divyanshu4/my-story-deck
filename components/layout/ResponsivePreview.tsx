@@ -3,12 +3,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
-// --- Type Definitions ---
 interface ResponsivePreviewProps {
   children: React.ReactNode;
 }
 
-// --- Constants ---
 const IFRAME_INITIAL_CONTENT = `
 <!DOCTYPE html>
 <html lang="en">
@@ -43,31 +41,41 @@ const ResponsivePreview: React.FC<ResponsivePreviewProps> = ({ children }) => {
   const [mountNode, setMountNode] = useState<HTMLElement | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+
+  const setupIframe = (iframe: HTMLIFrameElement) => {
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+
+    if (doc) {
+      doc.open();
+      doc.write(IFRAME_INITIAL_CONTENT);
+      doc.close();
+    }
+  };
+
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe) return;
 
-    // 1. Function to initialize the Iframe content
-    const setupIframe = () => {
+    setupIframe(iframe);
+
+    const handleLoad = () => {
       const doc = iframe.contentDocument || iframe.contentWindow?.document;
-
       if (doc) {
-        // Open the document to write (this clears previous content)
-        doc.open();
-        doc.write(IFRAME_INITIAL_CONTENT);
-        doc.close();
-
-        // 2. Immediately grab the root element
         const root = doc.getElementById("iroot");
         if (root) {
           setMountNode(root);
+          setIframeLoaded(true);
         }
       }
     };
 
-    // 3. Execute setup immediately
-    setupIframe();
-  }, []); // Empty dependency array ensures this runs once on mount
+    iframe.addEventListener("load", handleLoad);
+
+    return () => {
+      iframe.removeEventListener("load", handleLoad);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col items-center w-full h-full bg-gray-50 text-gray-900">
@@ -90,8 +98,7 @@ const ResponsivePreview: React.FC<ResponsivePreviewProps> = ({ children }) => {
             style={{ colorScheme: "light" }}
           />
 
-          {/* Render Portal if mountNode is ready */}
-          {mountNode && createPortal(children, mountNode)}
+          {mountNode && iframeLoaded && createPortal(children, mountNode)}
         </div>
       </div>
     </div>
