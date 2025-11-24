@@ -8,15 +8,19 @@ import { Separator } from "../ui/separator";
 import ResponsivePreview from "./ResponsivePreview";
 import { PreviewPanel } from "../panels/PreviewPanel";
 import { initialPortfolioData } from "@/data/testData";
+import { PortfolioData } from "@/types";
+import StoreInitializer from "../store/StoreInitializer";
 
 interface LayoutSwitcherProps {
   portfolioId?: string;
   selectedTemplate?: string;
+  portfolioData?: PortfolioData | null;
 }
 
 export default function LayoutSwitcher({
   portfolioId,
   selectedTemplate,
+  portfolioData,
 }: LayoutSwitcherProps) {
  
   const [layoutMode, setLayoutMode] = useState("tab");
@@ -68,6 +72,7 @@ export default function LayoutSwitcher({
 
   return (
     <div className="flex flex-col h-screen w-full overflow-hidden bg-slate-50 text-slate-900">
+      {portfolioData && <StoreInitializer data={portfolioData} />}
       {/* --- Toolbar --- */}
       <div className="h-14 border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 bg-white shrink-0">
         <div className="font-semibold flex items-center gap-2 text-slate-800">
@@ -120,6 +125,7 @@ export default function LayoutSwitcher({
             <EditorPanel
               portfolioId={portfolioId}
               selectedTemplate={selectedTemplate}
+              portfolioData={portfolioData}
             />
           </div>
         </div>
@@ -133,7 +139,7 @@ export default function LayoutSwitcher({
           className={`h-full transition-all duration-500 ease-in-out bg-slate-50 ${styles.preview}`}
         >
           <ResponsivePreview>
-            <PreviewPanel data={initialPortfolioData} />
+            <PreviewPanel />
           </ResponsivePreview>
         </div>
       </div>

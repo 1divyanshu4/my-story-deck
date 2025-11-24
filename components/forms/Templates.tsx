@@ -8,37 +8,22 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Button } from "../ui/button";
 import { Check, Loader2 } from "lucide-react";
-import { updatePortfolioTemplate } from "@/lib/actions/portfolio.actions";
+import { usePortfolioStore } from "@/lib/store/usePortfolioStore";
 import { cn } from "@/lib/utils";
 
 interface TemplatesProps {
-  portfolioId: string;
   selectedTemplate: string;
 }
 
 const Templates = ({
-  portfolioId,
   selectedTemplate: initialTemplate,
 }: TemplatesProps) => {
-  const [selected, setSelected] = useState(initialTemplate);
-  const [isPending, startTransition] = useTransition();
+  const { data, updateTemplate } = usePortfolioStore();
+  const selected = data?.selectedTemplate || initialTemplate;
 
   const handleSelect = (template: string) => {
-    if (!portfolioId) {
-      console.error("Portfolio ID is missing");
-      return;
-    }
-    setSelected(template);
-    startTransition(async () => {
-      try {
-        await updatePortfolioTemplate(portfolioId, template);
-      } catch (error) {
-        console.error("Failed to update template", error);
-        // Revert on failure if needed
-      }
-    });
+    updateTemplate(template);
   };
 
   return (
@@ -55,14 +40,14 @@ const Templates = ({
         <Card
           className={cn(
             "cursor-pointer transition-all hover:border-primary",
-            selected === "minimalist" ? "border-primary border-2" : ""
+            selected === "minimalism" ? "border-primary border-2" : ""
           )}
-          onClick={() => handleSelect("minimalist")}
+          onClick={() => handleSelect("minimalism")}
         >
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
               Minimalism
-              {selected === "minimalist" && (
+              {selected === "minimalism" && (
                 <Check className="h-5 w-5 text-primary" />
               )}
             </CardTitle>
@@ -104,12 +89,7 @@ const Templates = ({
         </Card>
       </div>
 
-      {isPending && (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Saving changes...
-        </div>
-      )}
+
     </div>
   );
 };

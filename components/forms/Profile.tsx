@@ -1,4 +1,6 @@
-import { CTAButton, Profile } from "@/types";
+"use client";
+
+import { CTAButton } from "@/types";
 import React from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,31 +15,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "../ui/scroll-area";
+import { usePortfolioStore } from "@/lib/store/usePortfolioStore";
 
-// --- Interface and Component Definition ---
 
-interface ProfileFormProps {
-  data: Profile;
-  onProfileChange: (
+export const ProfileForm: React.FC = () => {
+  const { data, updateProfile, updateCtaButton } = usePortfolioStore();
+
+  const handleProfileChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
-  onCtaChange: (
+  ) => {
+    const { name, value } = e.target;
+    updateProfile({ [name]: value });
+  };
+
+  const handleCtaChange = (
     index: number,
     field: keyof Omit<CTAButton, "id" | "type">,
     value: string
-  ) => void;
-}
+  ) => {
+    updateCtaButton(index, { [field]: value });
+  };
 
-export const ProfileForm: React.FC<ProfileFormProps> = ({
-  data,
-  onProfileChange,
-  onCtaChange,
-}) => {
   // Helper function for SelectInput change handler
   const handleCtaSelectChange =
     (index: number, field: keyof Omit<CTAButton, "id" | "type">) =>
     (value: string) => {
-      onCtaChange(index, field, value);
+      handleCtaChange(index, field, value);
     };
 
   const sectionOptions = [
@@ -63,8 +66,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
               <Input
                 id="name"
                 name="name"
-                value={data.name}
-                onChange={onProfileChange}
+                value={data?.profile.name || ""}
+                onChange={handleProfileChange}
                 placeholder="e.g., Alex Doe"
               />
             </div>
@@ -75,8 +78,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
               <Input
                 id="tagline"
                 name="role"
-                value={data.role}
-                onChange={onProfileChange}
+                value={data?.profile.role || ""}
+                onChange={handleProfileChange}
                 placeholder="e.g., Senior Frontend Developer"
               />
             </div>
@@ -87,8 +90,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
               <Input
                 id="imageUrl"
                 name="imageUrl"
-                value={data.imageUrl}
-                onChange={onProfileChange}
+                value={data?.profile.imageUrl || ""}
+                onChange={handleProfileChange}
                 placeholder="https://..."
               />
             </div>
@@ -99,8 +102,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
               <Textarea
                 id="bio"
                 name="bio"
-                value={data.bio}
-                onChange={onProfileChange}
+                value={data?.profile.bio || ""}
+                onChange={handleProfileChange}
                 placeholder="Tell us about yourself..."
                 rows={5}
               />
@@ -124,8 +127,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                     <Input
                       id="cta-primary-label"
                       name="label"
-                      value={data.ctaButtons[0]?.label || ""}
-                      onChange={(e) => onCtaChange(0, "label", e.target.value)}
+                      value={data?.profile.ctaButtons[0]?.label || ""}
+                      onChange={(e) => handleCtaChange(0, "label", e.target.value)}
                     />
                   </div>
 
@@ -135,7 +138,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                       Scroll To Section
                     </Label>
                     <Select
-                      value={data.ctaButtons[0]?.scrollTo || "#projects"}
+                      value={data?.profile.ctaButtons[0]?.scrollTo || "projects"}
                       onValueChange={handleCtaSelectChange(0, "scrollTo")}
                     >
                       <SelectTrigger
@@ -170,8 +173,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                     <Input
                       id="cta-secondary-label"
                       name="label"
-                      value={data.ctaButtons[1]?.label || ""}
-                      onChange={(e) => onCtaChange(1, "label", e.target.value)}
+                      value={data?.profile.ctaButtons[1]?.label || ""}
+                      onChange={(e) => handleCtaChange(1, "label", e.target.value)}
                     />
                   </div>
 
@@ -181,7 +184,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
                       Scroll To Section
                     </Label>
                     <Select
-                      value={data.ctaButtons[1]?.scrollTo || "#contact"}
+                      value={data?.profile.ctaButtons[1]?.scrollTo || "contact"}
                       onValueChange={handleCtaSelectChange(1, "scrollTo")}
                     >
                       <SelectTrigger

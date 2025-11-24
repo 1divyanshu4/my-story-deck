@@ -19,6 +19,7 @@ const Editor = async () => {
       <LayoutSwitcher
         portfolioId={portfolio?._id?.toString()}
         selectedTemplate={portfolio?.selectedTemplate}
+        portfolioData={portfolio}
       />
     </div>
   );

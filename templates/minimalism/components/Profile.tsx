@@ -27,11 +27,14 @@ const ProfileSection: React.FC<HeroProps> = ({ profile }) => {
             {profile.bio}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            {profile.ctaButtons.map((btn) => {
+            {profile.ctaButtons.map((btn, index) => {
               const isPrimary = btn.type === "primary";
+              if (!btn.id) {
+                console.warn("CTA button missing ID:", btn);
+              }
               return (
                 <a
-                  key={btn.id}
+                  key={btn.id || index}
                   href={`#${btn.scrollTo}`}
                   onClick={(e) => handleClick(e, btn.scrollTo as string)}
                   className={`text-center px-6 py-3 sm:px-8 sm:py-3 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 ${
