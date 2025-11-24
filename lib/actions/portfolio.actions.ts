@@ -69,3 +69,25 @@ export async function updateProfile(portfolioId: string, profileData: any) {
         throw new Error(`Failed to update profile: ${error.message}`);
     }
 }
+
+export async function updateStats(portfolioId: string, stats: any[]) {
+    try {
+        if (!portfolioId) {
+            throw new Error("Portfolio ID is required");
+        }
+
+        await connectToDB();
+
+        await Portfolio.findByIdAndUpdate(
+            portfolioId,
+            { stats: stats },
+            { new: true }
+        );
+
+        revalidatePath("/editor");
+        return { success: true };
+    } catch (error: any) {
+        console.error("Failed to update stats:", error);
+        throw new Error(`Failed to update stats: ${error.message}`);
+    }
+}

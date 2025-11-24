@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { PortfolioData, Profile, CTAButton } from "@/types";
-import { updateProfile, updatePortfolioTemplate } from "@/lib/actions/portfolio.actions";
+import { updateProfile, updatePortfolioTemplate, updateStats } from "@/lib/actions/portfolio.actions";
 
 interface PortfolioState {
     data: PortfolioData | null;
@@ -13,6 +13,8 @@ interface PortfolioState {
     updateProfile: (profile: Partial<Profile>) => void;
     updateCtaButton: (index: number, button: Partial<CTAButton>) => void;
     updateTemplate: (template: string) => void;
+    addStat: (stat: any) => void;
+    removeStat: (index: number) => void;
     saveChanges: (portfolioId: string) => Promise<void>;
 }
 
@@ -60,6 +62,23 @@ export const usePortfolioStore = create<PortfolioState>()(
                     }
                 }),
 
+            addStat: (stat) =>
+                set((state) => {
+                    if (state.data) {
+                        if (!state.data.stats) {
+                            state.data.stats = [];
+                        }
+                        state.data.stats.push(stat);
+                    }
+                }),
+
+            removeStat: (index) =>
+                set((state) => {
+                    if (state.data && state.data.stats) {
+                        state.data.stats.splice(index, 1);
+                    }
+                }),
+
             saveChanges: async (portfolioId) => {
                 const { data } = get();
                 if (!data) return;
@@ -71,6 +90,7 @@ export const usePortfolioStore = create<PortfolioState>()(
                 try {
                     await updateProfile(portfolioId, data.profile);
                     await updatePortfolioTemplate(portfolioId, data.selectedTemplate);
+                    await updateStats(portfolioId, data.stats);
 
                 } catch (error) {
                     console.error("Failed to save changes:", error);
