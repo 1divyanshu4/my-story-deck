@@ -9,8 +9,16 @@ import ResponsivePreview from "./ResponsivePreview";
 import { PreviewPanel } from "../panels/PreviewPanel";
 import { initialPortfolioData } from "@/data/testData";
 
-export default function LayoutSwitcher() {
-  // Modes: 'editor' (100/0), 'mobile' (75/25), 'tab' (50/50), 'desktop' (0/100)
+interface LayoutSwitcherProps {
+  portfolioId?: string;
+  selectedTemplate?: string;
+}
+
+export default function LayoutSwitcher({
+  portfolioId,
+  selectedTemplate,
+}: LayoutSwitcherProps) {
+ 
   const [layoutMode, setLayoutMode] = useState("tab");
 
   useEffect(() => {
@@ -109,7 +117,10 @@ export default function LayoutSwitcher() {
           className={`h-full transition-all duration-500 ease-in-out ${styles.editor}`}
         >
           <div className="min-w-[300px] h-full">
-            <EditorPanel />
+            <EditorPanel
+              portfolioId={portfolioId}
+              selectedTemplate={selectedTemplate}
+            />
           </div>
         </div>
 

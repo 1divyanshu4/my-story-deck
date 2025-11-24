@@ -18,7 +18,12 @@ import Projects from "../forms/Projects";
 import Contact from "../forms/Contact";
 import { initialPortfolioData } from "@/data/testData";
 
-const EditorPanel = () => {
+interface EditorPanelProps {
+  portfolioId?: string;
+  selectedTemplate?: string;
+}
+
+const EditorPanel = ({ portfolioId, selectedTemplate }: EditorPanelProps) => {
   return (
     <div className="flex flex-col h-full w-full items-center justify-start ">
       <div className="flex justify-between items-center text-sm text-gray-500 w-full pt-4 px-6">
@@ -55,7 +60,10 @@ const EditorPanel = () => {
 
           {/* Tab Content */}
           <TabsContent value="templates">
-            <Templates />
+            <Templates
+              portfolioId={portfolioId || ""}
+              selectedTemplate={selectedTemplate || "minimalist"}
+            />
           </TabsContent>
           <TabsContent value="profile">
             <ProfileForm
