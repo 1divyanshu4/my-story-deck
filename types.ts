@@ -54,6 +54,7 @@ export interface Contact {
     linkedin: string;
     github: string;
     twitter: string;
+    web3formsKey: string;
 }
 
 export interface PortfolioData {

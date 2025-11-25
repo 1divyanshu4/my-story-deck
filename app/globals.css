@@ -120,3 +120,47 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  /* Form Container Utilities */
+  .form-wrapper {
+    @apply w-full h-full rounded-lg border bg-background;
+  }
+
+  .form-content {
+    @apply w-full h-full p-6 space-y-8;
+  }
+
+  .form-header {
+    @apply flex flex-col;
+  }
+
+  .form-title {
+    @apply font-semibold text-lg;
+  }
+
+  .form-description {
+    @apply text-muted-foreground text-base;
+  }
+
+  .form-section {
+    @apply border rounded-lg p-4 bg-white space-y-4;
+  }
+
+  .form-section-title {
+    @apply text-base font-medium mb-4;
+  }
+
+  /* Form Item Utilities */
+  .form-item-card {
+    @apply border rounded-lg p-4 bg-white hover:border-primary/50 transition-colors;
+  }
+
+  .form-item-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+  }
+
+  .form-item-grid-skills {
+    @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4;
+  }
+}

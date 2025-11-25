@@ -15,17 +15,14 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     image: String,
-    portfolio: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Portfolio",
-        },
-    ],
+    portfolio: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Portfolio",
+    },
     onboarded: {
         type: Boolean,
         default: false,
     },
-
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

@@ -1,13 +1,18 @@
+"use client";
 import React from "react";
-
 import Image from "next/image";
 import { Profile } from "@/types";
+import { scrollToId } from "@/lib/utils";
 
 interface HeroProps {
   profile: Profile;
 }
 
 const ProfileSection: React.FC<HeroProps> = ({ profile }) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    scrollToId(id, 80);
+  };
   return (
     <section id="hero" className="pt-16 md:pt-20 pb-12">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 items-center">
@@ -22,12 +27,16 @@ const ProfileSection: React.FC<HeroProps> = ({ profile }) => {
             {profile.bio}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            {profile.ctaButtons.map((btn) => {
+            {profile.ctaButtons.map((btn, index) => {
               const isPrimary = btn.type === "primary";
+              if (!btn.id) {
+                console.warn("CTA button missing ID:", btn);
+              }
               return (
                 <a
-                  key={btn.id}
-                  href={btn.scrollTo}
+                  key={btn.id || index}
+                  href={`#${btn.scrollTo}`}
+                  onClick={(e) => handleClick(e, btn.scrollTo as string)}
                   className={`text-center px-6 py-3 sm:px-8 sm:py-3 rounded-lg font-semibold text-base sm:text-lg transition-all duration-300 ${
                     isPrimary
                       ? "bg-gray-900 dark:bg-gray-700 text-white hover:bg-gray-800 dark:hover:bg-gray-600 border-2 border-gray-900 dark:border-gray-700 hover:border-gray-800 dark:hover:border-gray-600 shadow-md"

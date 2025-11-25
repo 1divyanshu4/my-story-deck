@@ -6,6 +6,7 @@ import { SkillSection } from "./components/Skills";
 import { JourneySection } from "./components/Journey";
 import { Header } from "./components/Header";
 import { ProjectsSection } from "./components/Projects";
+import { ContactSection } from "./components/Contact";
 
 const MinimalismTemplate = ({ data }: { data: PortfolioData }) => {
   return (
@@ -14,13 +15,15 @@ const MinimalismTemplate = ({ data }: { data: PortfolioData }) => {
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <ProfileSection profile={data.profile} />
         <Separator />
-        <StatsSection stats={data.stats} />
+        {data.stats && <StatsSection stats={data.stats} />}
         <Separator />
-        <SkillSection skills={data.skills} />
+        {data.skills && <SkillSection skills={data.skills} />}
         <Separator />
-        <JourneySection items={data.journey} />
+        {data.journey && <JourneySection items={data.journey} />}
         <Separator />
-        <ProjectsSection projects={data.projects} />
+        {data.projects && <ProjectsSection projects={data.projects} />}
+        <Separator />
+        {data.contact && <ContactSection contact={data.contact} />}
       </main>
     </div>
   );

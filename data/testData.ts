@@ -8,8 +8,8 @@ export const initialPortfolioData: PortfolioData = {
         imageUrl: 'https://ik.imagekit.io/1divyanshu4/default-image.jpg?updatedAt=1763635142066',
         bio: "I'm a frontend developer passionate about crafting smooth, responsive, and beautiful interfaces. I specialize in converting ideas into pixel-perfect experiences. Clean code, delightful UI, and performance-driven design are what I live for.",
         ctaButtons: [
-            { id: '1', type: 'primary', label: 'View Projects', scrollTo: '#projects' },
-            { id: '2', type: 'secondary', label: 'Contact Me', scrollTo: '#contact' },
+            { id: '1', type: 'primary', label: 'View Projects', scrollTo: 'projects' },
+            { id: '2', type: 'secondary', label: 'Contact Me', scrollTo: 'contact' },
         ],
     },
     stats: [

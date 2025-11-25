@@ -1,39 +1,54 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { scrollToId } from "@/lib/utils";
-import { CrossIcon, MenuIcon, User } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import { X as CrossIcon, Menu as MenuIcon, User } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
 
 interface HeaderProps {
   name: string;
 }
 
-const NavLinks = () => (
-  <>
-    <a
-      href="#journey"
-      onClick={(e) => {
-        e.preventDefault();
-        scrollToId("journey", 80); // offset = 80px
-      }}
-      className="hover:text-gray-900 transition-colors"
-    >
-      Journey
-    </a>
-    <a
-      href="#projects"
-      onClick={(e) => {
-        e.preventDefault();
-        scrollToId("projects", 80); // offset = 80px
-      }}
-      className="hover:text-gray-900 transition-colors"
-    >
-      Projects
-    </a>
-  </>
-);
+interface NavLinksProps {
+  onLinkClick?: () => void;
+}
+
+// --- NavLinks Component ---
+const NavLinks: React.FC<NavLinksProps> = ({ onLinkClick }) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    scrollToId(id, 80);
+    onLinkClick?.();
+  };
+
+  return (
+    <>
+      <Button className="text-xl" variant="link">
+        <a
+          href="#journey"
+          onClick={(e) => handleClick(e, "journey")}
+          className=""
+        >
+          Journey
+        </a>
+      </Button>
+      <Button className="text-xl" variant="link">
+        <a
+          href="#projects"
+          onClick={(e) => handleClick(e, "projects")}
+          className=""
+        >
+          Projects
+        </a>
+      </Button>
+    </>
+  );
+};
+
 export const Header: React.FC<HeaderProps> = ({ name }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const closeMenu = useCallback(() => setIsMenuOpen(false), []);
 
   useEffect(() => {
     const body = document.querySelector("body");
@@ -47,17 +62,26 @@ export const Header: React.FC<HeaderProps> = ({ name }) => {
     };
   }, [isMenuOpen]);
 
+  const handleHeroClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    scrollToId("hero", 80);
+    closeMenu();
+  };
+
+  const handleContactClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    scrollToId("contact", 80);
+    closeMenu();
+  };
+
   return (
     <>
-      <header className="sticky top-0 z-40 bg-gray-50 backdrop-blur-md border-b border-gray-200/80">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 md:h-20  flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-gray-50/90 backdrop-blur-md border-b border-gray-200/80">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 md:h-20 flex items-center justify-between">
           <a
             href="#hero"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToId("hero", 80); // offset = 80px
-            }}
-            className="flex items-center gap-2 group"
+            onClick={handleHeroClick}
+            className="flex items-center gap-2 group shrink-0"
           >
             <div className="w-8 h-8 p-1.5 border-2 border-gray-800 rounded-lg flex items-center justify-center">
               <User className="w-full h-full text-gray-800" />
@@ -66,16 +90,15 @@ export const Header: React.FC<HeaderProps> = ({ name }) => {
               {name || "Alex Doe"}
             </span>
           </a>
+
           <nav className="hidden md:flex items-center gap-8 text-base font-medium text-gray-600">
             <NavLinks />
           </nav>
+
           <div className="flex items-center gap-4">
             <a
               href="#contact"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToId("contact", 80); // offset = 80px
-              }}
+              onClick={handleContactClick}
               className="hidden md:inline-block px-5 py-2 bg-gray-900 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-gray-800 transition-colors duration-300"
             >
               Get in Touch
@@ -98,20 +121,22 @@ export const Header: React.FC<HeaderProps> = ({ name }) => {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 z-30 bg-white transition-transform transform ${
+        className={`fixed inset-0 top-16 z-30 bg-white transition-transform duration-300 ease-in-out transform ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         } md:hidden`}
       >
-        <div className="h-full flex flex-col items-center justify-center">
-          <nav className="flex flex-col items-center gap-10 text-2xl font-semibold text-gray-800">
-            <NavLinks />
+        <div className="h-full flex flex-col items-start px-6 pt-8">
+          <nav className="flex flex-col items-start gap-4 text-xl font-semibold text-gray-800 w-full">
+            <div className="flex flex-col items-start gap-2 pl-8">
+              <NavLinks onLinkClick={closeMenu} />
+            </div>
+
+            <div className="mt-6 w-full h-px bg-gray-200"></div>
+
             <a
               href="#contact"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToId("contact", 80); // offset = 80px
-              }}
-              className="mt-4 px-6 py-2 bg-gray-900 text-white rounded-lg"
+              onClick={handleContactClick}
+              className="mt-4 w-full text-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
             >
               Get in Touch
             </a>
