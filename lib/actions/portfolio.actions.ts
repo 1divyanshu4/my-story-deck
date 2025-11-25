@@ -4,6 +4,7 @@ import { connectToDB } from "../mongoose";
 import Portfolio from "../models/portfolio.model";
 import { revalidatePath } from "next/cache";
 import User from "../models/user.model";
+import { PortfolioData } from "@/types";
 
 export async function getPortfolio(clerkId: string) {
     try {
@@ -177,5 +178,24 @@ export async function updateContact(portfolioId: string, contact: any) {
     } catch (error: any) {
         console.error("Failed to update contact:", error);
         throw new Error(`Failed to update contact: ${error.message}`);
+    }
+}
+
+export async function getPublicPortfolioByUserSlug(slug: string) {
+    try {
+        await connectToDB();
+        const user = await User.findOne({ userslug: slug }).populate("portfolio");
+        console.log(user);
+
+        if (!user || !user.portfolio) {
+            return null;
+        }
+
+        const portfolio = JSON.parse(JSON.stringify(user.portfolio)) as PortfolioData;
+        console.log(portfolio);
+        return portfolio;
+    } catch (error: any) {
+        console.error("Failed to fetch public portfolio:", error);
+        throw new Error(`Failed to fetch public portfolio: ${error.message}`);
     }
 }

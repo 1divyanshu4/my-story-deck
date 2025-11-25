@@ -2,16 +2,13 @@
 
 import MinimalismTemplate from "@/templates/minimalism";
 import EditorialTemplate from "@/templates/editorial";
+import { PortfolioData } from "@/types";
 
-import { usePortfolioStore } from "@/lib/store/usePortfolioStore";
+interface PublicPortfolioPanelProps {
+  data: PortfolioData;
+}
 
-
-
-export const PreviewPanel = () => {
-  const data = usePortfolioStore((state) => state.data);
-
-  if (!data) return null;
-
+export const PublicPortfolioPanel = ({ data }: PublicPortfolioPanelProps) => {
   const renderTemplate = () => {
     switch (data.selectedTemplate) {
       case "minimalism":
