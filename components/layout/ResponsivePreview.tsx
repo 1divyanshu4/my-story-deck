@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { Button } from "../ui/button";
 
 interface ResponsivePreviewProps {
   children: React.ReactNode;
@@ -81,11 +82,12 @@ const ResponsivePreview: React.FC<ResponsivePreviewProps> = ({ children }) => {
     <div className="flex flex-col items-center w-full h-full bg-gray-50 text-gray-900">
       <div className="relative w-full h-full p-4 pl-2 flex flex-col gap-2">
         {/* Header */}
-        <div className="flex justify-between items-center text-sm text-gray-500 mb-2 py-2">
+        <div className="flex justify-between items-center text-sm text-gray-500 mb-2 ">
           <span className="font-medium">Preview Mode</span>
           <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-            Live Interactive
+            Unpublished
           </span>
+          <Button size={"sm"}>Publish</Button>
         </div>
 
         {/* Iframe Container */}

@@ -1,3 +1,5 @@
+"use client";
+
 import { Contact } from "@/types";
 import { Mail, Linkedin, Github, Twitter, Send } from "lucide-react";
 import { useState } from "react";

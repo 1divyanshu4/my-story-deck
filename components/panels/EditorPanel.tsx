@@ -12,8 +12,6 @@ import { ProfileForm } from "../forms/Profile";
 import { StatsForm } from "../forms/StatsForm";
 import { SkillsForm } from "../forms/SkillsForm";
 import Templates from "../forms/Templates";
-import Stats from "../forms/Stats";
-import Skills from "../forms/Skills";
 import Journey from "../forms/Journey";
 import Projects from "../forms/Projects";
 import Contact from "../forms/Contact";
@@ -79,7 +77,7 @@ const EditorPanel = ({
   return (
     <div className="flex flex-col h-full w-full">
       {/* Header - Desktop only */}
-      <div className="hidden md:flex justify-between items-center w-full pt-3 px-4 pt-1">
+      <div className="hidden md:flex justify-between items-center w-full pt-3 px-4 ">
         {/* Tab Navigation - Desktop */}
         <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200 gap-1">
           {tabs.map((tab) => {
@@ -140,7 +138,7 @@ const EditorPanel = ({
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 w-full p-4 overflow-hidden">
+      <div className="flex-1 w-full p-4 pt-2 overflow-hidden">
         {renderContent()}
       </div>
 
