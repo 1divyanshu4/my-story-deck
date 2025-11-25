@@ -6,6 +6,7 @@ import { SkillSection } from "./components/Skills";
 import { JourneySection } from "./components/Journey";
 import { Header } from "./components/Header";
 import { ProjectsSection } from "./components/Projects";
+import { ContactSection } from "./components/Contact";
 
 const MinimalismTemplate = ({ data }: { data: PortfolioData }) => {
   return (
@@ -21,6 +22,8 @@ const MinimalismTemplate = ({ data }: { data: PortfolioData }) => {
         {data.journey && <JourneySection items={data.journey} />}
         <Separator />
         {data.projects && <ProjectsSection projects={data.projects} />}
+        <Separator />
+        {data.contact && <ContactSection contact={data.contact} />}
       </main>
     </div>
   );

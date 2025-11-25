@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { PortfolioData, Profile, CTAButton, JourneyItem, Project } from "@/types";
-import { updateProfile, updatePortfolioTemplate, updateStats, updateSkills, updateJourney, updateProjects } from "@/lib/actions/portfolio.actions";
+import { PortfolioData, Profile, CTAButton, JourneyItem, Project, Contact } from "@/types";
+import { updateProfile, updatePortfolioTemplate, updateStats, updateSkills, updateJourney, updateProjects, updateContact } from "@/lib/actions/portfolio.actions";
 
 interface PortfolioState {
     data: PortfolioData | null;
@@ -21,6 +21,7 @@ interface PortfolioState {
     removeJourneyItem: (index: number) => void;
     addProject: (project: Project) => void;
     removeProject: (index: number) => void;
+    updateContact: (contact: Partial<Contact>) => void;
     saveChanges: (portfolioId: string) => Promise<void>;
 }
 
@@ -136,6 +137,13 @@ export const usePortfolioStore = create<PortfolioState>()(
                     }
                 }),
 
+            updateContact: (contact) =>
+                set((state) => {
+                    if (state.data) {
+                        state.data.contact = { ...state.data.contact, ...contact };
+                    }
+                }),
+
             saveChanges: async (portfolioId) => {
                 const { data } = get();
                 if (!data) return;
@@ -151,6 +159,7 @@ export const usePortfolioStore = create<PortfolioState>()(
                     await updateSkills(portfolioId, data.skills);
                     await updateJourney(portfolioId, data.journey);
                     await updateProjects(portfolioId, data.projects);
+                    await updateContact(portfolioId, data.contact);
 
                 } catch (error) {
                     console.error("Failed to save changes:", error);

@@ -157,3 +157,25 @@ export async function updateProjects(portfolioId: string, projects: any[]) {
         throw new Error(`Failed to update projects: ${error.message}`);
     }
 }
+
+export async function updateContact(portfolioId: string, contact: any) {
+    try {
+        if (!portfolioId) {
+            throw new Error("Portfolio ID is required");
+        }
+
+        await connectToDB();
+
+        await Portfolio.findByIdAndUpdate(
+            portfolioId,
+            { contact: contact },
+            { new: true }
+        );
+
+        revalidatePath("/editor");
+        return { success: true };
+    } catch (error: any) {
+        console.error("Failed to update contact:", error);
+        throw new Error(`Failed to update contact: ${error.message}`);
+    }
+}
