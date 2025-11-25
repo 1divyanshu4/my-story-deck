@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { PortfolioData, Profile, CTAButton } from "@/types";
-import { updateProfile, updatePortfolioTemplate, updateStats, updateSkills } from "@/lib/actions/portfolio.actions";
+import { PortfolioData, Profile, CTAButton, JourneyItem } from "@/types";
+import { updateProfile, updatePortfolioTemplate, updateStats, updateSkills, updateJourney } from "@/lib/actions/portfolio.actions";
 
 interface PortfolioState {
     data: PortfolioData | null;
@@ -17,6 +17,8 @@ interface PortfolioState {
     removeStat: (index: number) => void;
     addSkill: (skill: any) => void;
     removeSkill: (index: number) => void;
+    addJourneyItem: (item: JourneyItem) => void;
+    removeJourneyItem: (index: number) => void;
     saveChanges: (portfolioId: string) => Promise<void>;
 }
 
@@ -98,6 +100,23 @@ export const usePortfolioStore = create<PortfolioState>()(
                     }
                 }),
 
+            addJourneyItem: (item) =>
+                set((state) => {
+                    if (state.data) {
+                        if (!state.data.journey) {
+                            state.data.journey = [];
+                        }
+                        state.data.journey.push(item);
+                    }
+                }),
+
+            removeJourneyItem: (index) =>
+                set((state) => {
+                    if (state.data && state.data.journey) {
+                        state.data.journey.splice(index, 1);
+                    }
+                }),
+
             saveChanges: async (portfolioId) => {
                 const { data } = get();
                 if (!data) return;
@@ -111,6 +130,7 @@ export const usePortfolioStore = create<PortfolioState>()(
                     await updatePortfolioTemplate(portfolioId, data.selectedTemplate);
                     await updateStats(portfolioId, data.stats);
                     await updateSkills(portfolioId, data.skills);
+                    await updateJourney(portfolioId, data.journey);
 
                 } catch (error) {
                     console.error("Failed to save changes:", error);

@@ -113,3 +113,25 @@ export async function updateSkills(portfolioId: string, skills: any[]) {
         throw new Error(`Failed to update skills: ${error.message}`);
     }
 }
+
+export async function updateJourney(portfolioId: string, journey: any[]) {
+    try {
+        if (!portfolioId) {
+            throw new Error("Portfolio ID is required");
+        }
+
+        await connectToDB();
+
+        await Portfolio.findByIdAndUpdate(
+            portfolioId,
+            { journey: journey },
+            { new: true }
+        );
+
+        revalidatePath("/editor");
+        return { success: true };
+    } catch (error: any) {
+        console.error("Failed to update journey:", error);
+        throw new Error(`Failed to update journey: ${error.message}`);
+    }
+}
