@@ -135,3 +135,25 @@ export async function updateJourney(portfolioId: string, journey: any[]) {
         throw new Error(`Failed to update journey: ${error.message}`);
     }
 }
+
+export async function updateProjects(portfolioId: string, projects: any[]) {
+    try {
+        if (!portfolioId) {
+            throw new Error("Portfolio ID is required");
+        }
+
+        await connectToDB();
+
+        await Portfolio.findByIdAndUpdate(
+            portfolioId,
+            { projects: projects },
+            { new: true }
+        );
+
+        revalidatePath("/editor");
+        return { success: true };
+    } catch (error: any) {
+        console.error("Failed to update projects:", error);
+        throw new Error(`Failed to update projects: ${error.message}`);
+    }
+}
