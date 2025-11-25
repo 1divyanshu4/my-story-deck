@@ -7,7 +7,6 @@ import EditorPanel from "../panels/EditorPanel";
 import { Separator } from "../ui/separator";
 import ResponsivePreview from "./ResponsivePreview";
 import { PreviewPanel } from "../panels/PreviewPanel";
-import { initialPortfolioData } from "@/data/testData";
 import { PortfolioData } from "@/types";
 import StoreInitializer from "../store/StoreInitializer";
 
@@ -121,7 +120,7 @@ export default function LayoutSwitcher({
         <div
           className={`h-full transition-all duration-500 ease-in-out ${styles.editor}`}
         >
-          <div className="min-w-[300px] h-full">
+          <div className="w-full h-full">
             <EditorPanel
               portfolioId={portfolioId}
               selectedTemplate={selectedTemplate}
@@ -130,9 +129,6 @@ export default function LayoutSwitcher({
           </div>
         </div>
 
-        {layoutMode !== "editor" && layoutMode !== "desktop" && (
-          <Separator orientation="vertical" className="h-full" />
-        )}
 
         {/* Preview Panel */}
         <div

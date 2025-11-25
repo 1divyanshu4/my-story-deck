@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { Skill } from '@/types';
 import { usePortfolioStore } from '@/lib/store/usePortfolioStore';
 import { Trash2, Plus, Search, ChevronDown, ChevronUp } from 'lucide-react';
-import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -46,19 +45,19 @@ export const SkillsForm: React.FC = () => {
     );
 
     return (
-        <ScrollArea className="w-full h-136 rounded-xl border bg-background">
-            <div className="w-full h-full p-6 space-y-8">
-                <div className="flex flex-col cursor-pointer">
+        <ScrollArea className="form-wrapper">
+            <div className="form-content">
+                <div className="form-header cursor-pointer">
                     <div className="flex justify-between items-center">
-                         <div className="font-bold text-xl">Skills</div>
+                         <div className="form-title">Skills</div>
                          <ChevronUp className="h-5 w-5 text-gray-500" />
                     </div>
-                    <div className="text-muted-foreground text-sm">Your technical abilities. Click header to collapse form.</div>
+                    <div className="form-description">Your technical abilities. Click header to collapse form.</div>
                 </div>
 
                 <div className="space-y-4">
-                     <h3 className="font-medium text-base">Add a Skill</h3>
-                     <div className="border rounded-lg p-4 space-y-4 bg-white">
+                     <h3 className="form-section-title">Add a Skill</h3>
+                     <div className="form-section">
                         {!showManualInput ? (
                             <>
                                 {/* Search */}
@@ -96,17 +95,14 @@ export const SkillsForm: React.FC = () => {
                                 </div>
 
                                 {/* Manual Input Toggle */}
-                                <div className="border-t pt-4  cursor-pointer" onClick={() => setShowManualInput(true)}>
-                                    <button 
-                                        
-                                        className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2"
-                                    >
+                                <div className="border-t pt-4 cursor-pointer" onClick={() => setShowManualInput(true)}>
+                                    <button className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2">
                                         Other (Specify manually)
                                     </button>
                                 </div>
                             </>
                         ) : (
-                            <div className="space-y-4 animate-in slide-in-from-top-2 fade-in duration-200">
+                            <div className="space-y-4">
                                 <h4 className="font-medium text-base">Add a Custom Skill</h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
@@ -157,30 +153,31 @@ export const SkillsForm: React.FC = () => {
 
                 {/* Current Skills List (Populated) */}
                 {items.length > 0 && (
-                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+                     <div className="form-item-grid-skills">
                         {items.map((item, index) => (
-                            <Card key={item.id || index} className="group  relative overflow-hidden hover:border-primary/50 transition-colors rounded-md">
-                                <CardContent className="p-0 flex flex-col items-center justify-center gap-1 text-center ">
-                                    <div className="absolute right-0 top-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-6 w-6 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                                            onClick={() => removeSkill(index)}
-                                        >
-                                            <Trash2 className="h-3 w-3" />
-                                        </Button>
-                                    </div>
-                                    <div className="w-10 h-10 flex items-center justify-center bg-muted/20 rounded-lg p-1 mt-2">
-                                        {item.logoUrl ? (
-                                            <img src={item.logoUrl} alt={item.name} className="w-full h-full object-contain" />
-                                        ) : (
-                                            <span className="text-lg font-bold text-muted-foreground">{item.name.charAt(0)}</span>
-                                        )}
-                                    </div>
-                                    <span className="font-medium text-sm truncate w-full px-1">{item.name}</span>
-                                </CardContent>
-                            </Card>
+                            <div 
+                                key={item.id || index} 
+                                className="form-item-card group relative overflow-hidden flex flex-col items-center justify-center gap-2 text-center p-3"
+                            >
+                                <div className="absolute right-1 top-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-6 w-6 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                                        onClick={() => removeSkill(index)}
+                                    >
+                                        <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                </div>
+                                <div className="w-10 h-10 flex items-center justify-center bg-muted/20 rounded-lg p-1">
+                                    {item.logoUrl ? (
+                                        <img src={item.logoUrl} alt={item.name} className="w-full h-full object-contain" />
+                                    ) : (
+                                        <span className="text-lg font-bold text-muted-foreground">{item.name.charAt(0)}</span>
+                                    )}
+                                </div>
+                                <span className="font-medium text-sm truncate w-full px-1">{item.name}</span>
+                            </div>
                         ))}
                     </div>
                 )}
